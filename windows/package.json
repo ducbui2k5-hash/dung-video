@@ -1,0 +1,29 @@
+{
+  "name": "dung-video",
+  "productName": "Dựng Video",
+  "version": "1.0.0",
+  "description": "Chỉnh video và ảnh miễn phí",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron .",
+    "dist": "electron-builder --win nsis portable"
+  },
+  "devDependencies": {
+    "electron": "^31.0.0",
+    "electron-builder": "^24.13.3"
+  },
+  "build": {
+    "appId": "com.dungvideo.app",
+    "productName": "Dựng Video",
+    "artifactName": "DungVideo-${version}-${target}.${ext}",
+    "files": ["main.js", "app/**/*"],
+    "directories": { "buildResources": "build", "output": "dist" },
+    "win": { "icon": "build/icon.ico" },
+    "nsis": {
+      "oneClick": false,
+      "allowToChangeInstallationDirectory": true,
+      "createDesktopShortcut": true,
+      "shortcutName": "Dựng Video"
+    }
+  }
+}
