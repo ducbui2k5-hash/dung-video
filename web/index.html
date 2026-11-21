@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#161920">
+<meta name="description" content="Chỉnh video và ảnh miễn phí ngay trên trình duyệt: cắt ghép, chuyển cảnh, nhạc, chữ, làm đẹp, chỉnh màu.">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Dựng Video">
+<meta name="apple-mobile-web-app-status-bar-style" content="black">
+<link rel="manifest" href="manifest.json">
+<link rel="icon" href="icon-192.png">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<title>Dựng Video – trình chỉnh video miễn phí</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;700;800&family=Montserrat:wght@700;900&family=Oswald:wght@600&family=Lobster&family=Pacifico&family=Dancing+Script:wght@700&family=Patrick+Hand&display=swap">
+<style>
+:root{--bg:#0e1014;--panel:#161920;--panel2:#1e222b;--line:#2a2f3a;--text:#e8eaf0;--mute:#8b93a7;--acc:#3ee6c4;--acc2:#ff5c8a;--vid:#21407f;--txt:#7a560c;--aud:#0f4d39}
+*{box-sizing:border-box}
+html,body{margin:0;height:100%;-webkit-tap-highlight-color:transparent;background:var(--bg);color:var(--text);font-family:'Be Vietnam Pro',system-ui,sans-serif;font-size:14px}
+button,select,input,textarea{font:inherit;color:inherit;touch-action:manipulation}
+[hidden]{display:none!important}
+button{background:var(--panel2);border:1px solid var(--line);border-radius:8px;padding:6px 10px;cursor:pointer;white-space:nowrap}
+button:hover{border-color:#3d4452;background:#252a35}
+button.pri{background:var(--acc);color:#05231c;border-color:transparent;font-weight:700}
+button.pri:hover{filter:brightness(1.08)}
+button:disabled{opacity:.4;cursor:default}
+select,input[type=number],textarea{background:var(--panel2);border:1px solid var(--line);border-radius:8px;padding:6px 8px;width:100%}
+textarea{resize:vertical;min-height:60px}
+input[type=color]{width:38px;height:28px;border:1px solid var(--line);border-radius:6px;background:none;padding:0;cursor:pointer}
+input[type=range]{width:100%;accent-color:var(--acc)}
+input[type=checkbox]{accent-color:var(--acc);width:16px;height:16px}
+#app{display:grid;height:100vh;height:100dvh;grid-template-rows:52px minmax(0,1fr) auto;grid-template-columns:270px minmax(0,1fr) 300px;grid-template-areas:"hd hd hd" "lib stage props" "tl tl tl"}
+header{grid-area:hd;display:flex;align-items:center;gap:8px;padding:0 12px;border-bottom:1px solid var(--line);background:var(--panel)}
+.logo{font-weight:800;font-size:17px;display:flex;align-items:center;gap:8px;margin-right:6px}
+.logo i{width:26px;height:26px;border-radius:7px;background:linear-gradient(135deg,var(--acc),var(--acc2));display:inline-block;position:relative}
+.logo i:after{content:"";position:absolute;left:10px;top:7px;border-left:9px solid #fff;border-top:6px solid transparent;border-bottom:6px solid transparent}
+.sp{flex:1}
+aside{background:var(--panel);padding:12px;overflow:auto;min-height:0}
+#lib{grid-area:lib;border-right:1px solid var(--line)}
+#props{grid-area:props;border-left:1px solid var(--line)}
+#stageWrap{grid-area:stage;display:flex;flex-direction:column;min-height:0;min-width:0}
+#stage{flex:1;display:flex;align-items:center;justify-content:center;min-height:0;padding:12px;background:#0a0b0e}
+#cv{max-width:100%;max-height:100%;background:#000;box-shadow:0 6px 30px rgba(0,0,0,.5);touch-action:none;border-radius:4px}
+.ctl{display:flex;align-items:center;gap:8px;overflow-x:auto;padding:6px 12px;border-top:1px solid var(--line);background:var(--panel)}
+.ctl .tm{font-variant-numeric:tabular-nums;color:var(--mute);font-size:13px}
+.ctl .tm b{color:var(--text);font-weight:500}
+#playBtn{width:44px;font-size:16px}
+h3{margin:0 0 4px;font-size:15px}
+.sub{color:var(--mute);font-size:12px;margin-bottom:10px;word-break:break-all}
+.grp{border-top:1px solid var(--line);padding:10px 0}
+.gt{font-size:11px;color:var(--mute);text-transform:uppercase;letter-spacing:.07em;margin-bottom:6px;font-weight:700}
+label.row{display:grid;grid-template-columns:84px 1fr 46px;align-items:center;gap:8px;margin:6px 0;font-size:13px}
+label.row b{font-weight:500;text-align:right;color:var(--mute);font-size:12px;font-variant-numeric:tabular-nums}
+label.line{display:flex;align-items:center;gap:8px;margin:7px 0;font-size:13px}
+label.line span{flex:1}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.two label{font-size:12px;color:var(--mute)}
+.chips{display:flex;flex-wrap:wrap;gap:6px}
+.chips button{padding:4px 9px;font-size:12px}
+.chips button.on{border-color:var(--acc);color:var(--acc)}
+.full{width:100%;margin-top:6px}
+.hint{color:var(--mute);font-size:12.5px;line-height:1.55}
+.hint li{margin:3px 0}
+.imp{display:grid;gap:8px;margin-bottom:12px}
+.imp button{padding:10px;text-align:left}
+.imp button small{display:block;color:var(--mute);font-size:11.5px;margin-top:2px;white-space:normal}
+#mlist{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.mi{background:var(--panel2);border:1px solid var(--line);border-radius:10px;overflow:hidden;display:flex;flex-direction:column}
+.mi .th{height:70px;background:#000 center/cover no-repeat;position:relative;display:flex;align-items:center;justify-content:center;font-size:24px}
+.mi .th.au{background-size:100% 70%;background-color:#0b2c22}
+.mi .du{position:absolute;right:4px;bottom:4px;font-size:10.5px;background:rgba(0,0,0,.7);padding:1px 5px;border-radius:4px}
+.mi .nm{font-size:11.5px;padding:5px 7px 2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.mi .acts{display:flex;flex-wrap:wrap;gap:4px;padding:4px 6px 7px}
+.mi .acts button{font-size:11px;padding:3px 6px;flex:1}
+.empty{color:var(--mute);font-size:12.5px;grid-column:1/-1;padding:10px;border:1px dashed var(--line);border-radius:10px;text-align:center}
+#tl{grid-area:tl;background:var(--panel);border-top:1px solid var(--line);display:flex;flex-direction:column}
+.tbar{display:flex;align-items:center;gap:6px;padding:6px 10px;border-bottom:1px solid var(--line);overflow-x:auto}
+.tbar button{font-size:13px;padding:5px 9px}
+.tbar .sep{width:1px;height:22px;background:var(--line);flex:none;margin:0 2px}
+#tlBody{display:flex;max-height:34vh;min-height:150px;overflow-y:auto}
+#tlLabels{width:42px;flex:none;border-right:1px solid var(--line);background:var(--panel)}
+#tlLabels div{display:flex;align-items:center;justify-content:center;font-size:15px;border-bottom:1px solid var(--line);color:var(--mute)}
+#tlScroll{flex:1;overflow-x:auto;overflow-y:hidden;position:relative;touch-action:pan-x pan-y}
+#tlInner{position:relative;min-height:100%}
+#ruler{height:22px;position:relative;border-bottom:1px solid var(--line);cursor:pointer;touch-action:none;background:#12151b}
+.tick{position:absolute;top:0;height:100%;border-left:1px solid #333a47;font-size:10px;color:var(--mute);padding:4px 0 0 3px;pointer-events:none;white-space:nowrap}
+.track{position:relative;border-bottom:1px solid var(--line)}
+.clip{position:absolute;border-radius:6px;overflow:hidden;cursor:grab;touch-action:none;border:2px solid transparent;background-repeat:repeat-x;background-size:auto 100%}
+.clip.v{top:4px;bottom:4px;background-color:var(--vid)}
+.clip.t{background:var(--txt)}
+.clip.a{background-color:var(--aud);background-repeat:no-repeat}
+.clip.sel{border-color:#fff;box-shadow:0 0 0 1px #000,0 0 12px rgba(62,230,196,.35)}
+.clip .lb{position:absolute;left:6px;top:3px;font-size:11px;background:rgba(0,0,0,.55);padding:1px 5px;border-radius:4px;pointer-events:none;max-width:calc(100% - 12px);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.clip .h{position:absolute;top:0;bottom:0;width:11px;background:rgba(255,255,255,.9);display:none;cursor:ew-resize}
+.clip .h:after{content:"";position:absolute;left:4px;top:30%;bottom:30%;width:2px;background:#333;border-radius:2px}
+.clip.sel .h{display:block}
+.h.l{left:0}.h.r{right:0}
+#ph{position:absolute;top:0;bottom:0;width:0;pointer-events:none;z-index:8}
+#ph:before{content:"";position:absolute;left:-1px;top:0;bottom:0;width:2px;background:var(--acc2)}
+#ph:after{content:"";position:absolute;left:-6px;top:0;border-left:6px solid transparent;border-right:6px solid transparent;border-top:8px solid var(--acc2)}
+#toast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%) translateY(20px);background:#262b36;border:1px solid #3a4150;padding:10px 16px;border-radius:10px;opacity:0;transition:.25s;pointer-events:none;z-index:50;max-width:90vw;text-align:center;box-shadow:0 8px 30px rgba(0,0,0,.5)}
+#toast.on{opacity:1;transform:translateX(-50%)}
+#modal{position:fixed;inset:0;background:rgba(0,0,0,.65);display:flex;align-items:center;justify-content:center;z-index:40;padding:16px}
+#modal.hide{display:none}
+.box{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:20px;width:min(460px,100%);max-height:90vh;overflow:auto}
+.box h2{margin:0 0 6px;font-size:18px}
+.box video{width:100%;max-height:45vh;background:#000;border-radius:8px;margin:10px 0}
+.bar{height:10px;background:var(--panel2);border-radius:6px;overflow:hidden;margin:14px 0 6px}
+.bar i{display:block;height:100%;background:linear-gradient(90deg,var(--acc),var(--acc2));width:0}
+.btns{display:flex;gap:8px;justify-content:flex-end;margin-top:14px;flex-wrap:wrap}
+.opt{display:flex;gap:8px;margin:10px 0}
+.opt button{flex:1;padding:10px}
+.opt button.on{border-color:var(--acc);color:var(--acc)}
+#drop{position:fixed;inset:0;background:rgba(62,230,196,.12);border:3px dashed var(--acc);z-index:60;display:none;align-items:center;justify-content:center;font-size:22px;font-weight:700;pointer-events:none}
+#drop.on{display:flex}
+
+.seg{display:flex;background:var(--panel2);border:1px solid var(--line);border-radius:10px;padding:2px;gap:2px}
+.seg button{border:0;background:none;padding:5px 10px;border-radius:8px}
+.seg button.on{background:var(--acc);color:#05231c;font-weight:700}
+.clip.o{background-color:#5b2a7a}
+.trb{position:absolute;top:50%;width:22px;height:22px;margin:-11px 0 0 -11px;border-radius:50%;background:#2b303b;border:1px solid #4a5160;display:flex;align-items:center;justify-content:center;font-size:12px;cursor:pointer;z-index:6;color:#cfd5e1}
+.trb.on{background:var(--acc);color:#05231c;border-color:transparent}
+.trb.sel{box-shadow:0 0 0 2px #fff}
+.trgrid button{flex:1 1 30%}
+.stk{display:flex;flex-wrap:wrap;gap:4px}
+.stk button{font-size:24px;padding:4px;width:44px;height:44px;line-height:1;background:var(--panel2)}
+.recdot{display:flex;align-items:center;gap:10px;font-size:28px;font-variant-numeric:tabular-nums;margin:14px 0}
+.recdot i{width:16px;height:16px;border-radius:50%;background:#ff3b5c;animation:blink 1s infinite}
+@keyframes blink{50%{opacity:.25}}
+#photo{display:none}
+body.pm #lib,body.pm #stageWrap,body.pm #props,body.pm #tl{display:none}
+body.pm #photo{display:grid;grid-area:2/1/4/4;grid-template-columns:92px minmax(0,1fr) 300px;min-height:0}
+#pTools{background:var(--panel);border-right:1px solid var(--line);overflow:auto;display:flex;flex-direction:column;gap:4px;padding:8px 6px}
+#pTools button{display:flex;flex-direction:column;align-items:center;gap:3px;padding:8px 2px;font-size:11px;border-color:transparent;background:none;white-space:normal;text-align:center}
+#pTools button i{font-style:normal;font-size:20px;line-height:1}
+#pTools button.on{background:var(--panel2);border-color:var(--acc);color:var(--acc)}
+#pStageWrap{display:flex;flex-direction:column;min-height:0;min-width:0}
+#pStage{overflow:hidden;flex:1;display:flex;align-items:center;justify-content:center;min-height:0;padding:14px;background:repeating-conic-gradient(#14171d 0 25%,#0f1115 0 50%) 0 0/24px 24px;position:relative}
+#pcv{transform-origin:center;will-change:transform;max-width:100%;max-height:100%;touch-action:none;box-shadow:0 6px 30px rgba(0,0,0,.5);display:none}
+#pEmpty{display:flex;flex-direction:column;align-items:center;gap:10px;text-align:center;max-width:300px}
+#pEmpty button{width:220px;padding:10px}
+#pOpts{background:var(--panel);border-left:1px solid var(--line);padding:12px;overflow:auto;min-height:0}
+.fgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:6px}
+.fgrid button{padding:3px;display:flex;flex-direction:column;align-items:center;gap:3px;font-size:11px;white-space:normal}
+.fgrid img{width:100%;aspect-ratio:1;object-fit:cover;border-radius:6px;display:block}
+.fgrid button.on{border-color:var(--acc);color:var(--acc)}
+.bgrid{display:grid;grid-template-columns:repeat(4,1fr);gap:6px}
+.bgrid button{display:flex;flex-direction:column;align-items:center;gap:2px;font-size:11px;padding:7px 2px;white-space:normal}
+.bgrid button i{font-style:normal;font-size:18px}
+.bgrid button.on{border-color:var(--acc);color:var(--acc)}
+.sw{width:28px;height:28px;padding:0!important;border-radius:50%!important;border:2px solid #3a4150!important}
+.sw.on{border-color:#fff!important;box-shadow:0 0 0 2px var(--acc)}
+.chips input[type=color]{width:28px;height:28px;border-radius:50%}
+button.pri.full{margin-top:6px}
+.ctabs{margin:6px 0 2px}
+#curveCv{width:100%;max-width:300px;aspect-ratio:1;display:block;margin:10px auto 6px;border-radius:8px;touch-action:none;background:#0b0d11}
+.hslrow{display:flex;gap:6px;justify-content:space-between}
+.hslrow button{width:30px;height:30px;border-radius:50%;padding:0;border:2px solid transparent;color:#000;font-weight:900}
+.hslrow button.on{border-color:#fff;box-shadow:0 0 0 2px var(--acc)}
+.huebar{height:10px;border-radius:5px;margin:8px 0 2px;position:relative;background:linear-gradient(90deg,#f00,#ff0 16.7%,#0f0 33.3%,#0ff 50%,#00f 66.7%,#f0f 83.3%,#f00)}
+.huebar i{position:absolute;top:-3px;width:6px;height:16px;margin-left:-3px;background:#fff;border-radius:3px;box-shadow:0 0 0 1px #000}
+@media (max-width:900px){
+ body.pm #photo{display:flex;flex-direction:column;grid-area:auto}
+ body.pm #app{grid-template-areas:"hd" "ph"}
+ #pTools{flex-direction:row;border:0;border-bottom:1px solid var(--line);overflow-x:auto;padding:6px}
+ #pTools button{min-width:66px;flex:none}
+ #pStage{height:52vh;flex:none}
+ #pOpts{border:0;border-top:1px solid var(--line)}
+ .seg button{padding:5px 8px;font-size:13px}
+ header{gap:6px;padding:0 8px}
+ header button{padding:6px 8px}
+ #app{height:auto;min-height:100vh;grid-template-columns:minmax(0,1fr);grid-template-rows:auto auto auto auto auto;grid-template-areas:"hd" "stage" "tl" "props" "lib"}
+ header{height:52px;position:sticky;top:0;z-index:20}
+ #stage{height:42vh;flex:none}
+ #lib,#props{border:0;border-top:1px solid var(--line);overflow:visible}
+ #tlBody{max-height:none}
+ .clip .h{width:18px}
+ .trb{width:30px;height:30px;margin:-15px 0 0 -15px;font-size:14px}
+ #app{height:auto;min-height:100dvh}
+ .tbar button{padding:8px 11px}
+ #tlBody{min-height:170px}
+ .hide-m{display:none}
+}
+</style>
+</head>
+<body>
+<div id="app">
+ <header>
+  <div class="logo"><i></i><span class="hide-m">Dựng Video</span></div>
+  <div class="seg"><button id="modeV" class="on">🎬 Video</button><button id="modeP">🖼 <span class="hide-m">Chỉnh </span>ảnh</button></div>
+  <button id="undoBtn" title="Hoàn tác (Ctrl+Z)">↶<span class="hide-m"> Hoàn tác</span></button>
+  <button id="redoBtn" title="Làm lại (Ctrl+Y)">↷<span class="hide-m"> Làm lại</span></button>
+  <div class="sp"></div>
+  <button id="installBtn" hidden title="Cài app lên máy">📲<span class="hide-m"> Cài app</span></button>
+  <button class="pri" id="exportBtn">⬆ Xuất video</button>
+ </header>
+
+ <aside id="lib">
+  <div class="imp">
+   <button id="impBtn">📁 <b>Nhập tệp</b><small>Video, ảnh hoặc nhạc từ máy. Có thể kéo thả tệp vào đây.</small></button>
+   <button id="exBtn">🎬➜🎵 <b>Tách nhạc từ video</b><small>Chọn một video bất kỳ, lấy riêng phần âm thanh để làm nhạc nền hoặc tải về.</small></button>
+  </div>
+  <div class="gt">Thư viện</div>
+  <div id="mlist"></div>
+ </aside>
+
+ <section id="stageWrap">
+  <div id="stage"><canvas id="cv" width="1280" height="720"></canvas></div>
+  <div class="ctl">
+   <button id="startBtn" title="Về đầu">⏮</button>
+   <button id="playBtn" title="Phát / dừng (Space)">▶</button>
+   <span class="tm"><b id="tCur">00:00.0</b> / <span id="tTot">00:00.0</span></span>
+   <div class="sp"></div>
+   <span class="tm hide-m">Space: phát · S: tách · Del: xóa</span>
+  </div>
+ </section>
+
+ <aside id="props"></aside>
+
+ <section id="photo">
+  <nav id="pTools"></nav>
+  <div id="pStageWrap">
+   <div id="pStage"><canvas id="pcv"></canvas>
+    <div id="pEmpty"><div style="font-size:42px">🖼</div><b>Chỉnh ảnh</b><span class="hint">Mở một ảnh để chỉnh màu, làm đẹp, thêm chữ, sticker, khung…</span><button class="pri" id="pOpen">📂 Mở ảnh</button><button id="pColStart">▤ Ghép nhiều ảnh</button></div>
+   </div>
+   <div class="ctl"><button id="pOpen2">📂 Mở ảnh khác</button><button id="pCompare" title="Giữ để xem ảnh gốc">◐ <span class="hide-m">Giữ để </span>so sánh</button><button id="pZoom" hidden></button><div class="sp"></div><button id="pToVideo">🎬 Dùng trong video</button></div>
+  </div>
+  <aside id="pOpts"></aside>
+ </section>
+
+ <section id="tl">
+  <div class="tbar">
+   <button data-tb="split" title="Tách tại vạch đỏ (S)">✂ Tách</button>
+   <button data-tb="dup">⧉ Nhân bản</button>
+   <button data-tb="del">🗑 Xóa</button>
+   <button data-tb="left" title="Dời đoạn video sang trái">◀</button>
+   <button data-tb="right" title="Dời đoạn video sang phải">▶</button>
+   <button data-tb="extract">🎵 Tách âm thanh</button>
+   <span class="sep"></span>
+   <button data-tb="trans">⧓ Chuyển cảnh</button>
+   <button data-tb="text">＋ Chữ</button>
+   <button data-tb="sticker">😀 Sticker</button>
+   <button data-tb="music">＋ Nhạc</button>
+   <button data-tb="voice">🎙 Thu âm</button>
+   <span class="sep"></span>
+   <button data-tb="zout" title="Thu nhỏ">－</button>
+   <button data-tb="zin" title="Phóng to">＋</button>
+  </div>
+  <div id="tlBody">
+   <div id="tlLabels"></div>
+   <div id="tlScroll"><div id="tlInner">
+    <div id="ruler"></div>
+    <div class="track" id="trV"></div>
+    <div class="track" id="trO"></div>
+    <div class="track" id="trT"></div>
+    <div class="track" id="trA"></div>
+    <div id="ph"></div>
+   </div></div>
+  </div>
+ </section>
+</div>
+
+<input type="file" id="fImp" accept="video/*,audio/*,image/*" multiple hidden>
+<input type="file" id="fEx" accept="video/*" hidden>
+<input type="file" id="fMusic" accept="audio/*,video/*" hidden>
+<input type="file" id="fPhoto" accept="image/*" hidden>
+<input type="file" id="fCell" accept="image/*" hidden>
+<div id="modal" class="hide"><div class="box" id="mbox"></div></div>
+<div id="toast"></div>
+<div id="drop">Thả tệp vào đây</div>
+
+<script src="video.js"></script>
+<script src="photo.js"></script>
+</body>
+</html>
