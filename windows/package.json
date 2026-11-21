@@ -15,15 +15,28 @@
   "build": {
     "appId": "com.dungvideo.app",
     "productName": "Dựng Video",
-    "artifactName": "DungVideo-${version}-${target}.${ext}",
-    "files": ["main.js", "app/**/*"],
-    "directories": { "buildResources": "build", "output": "dist" },
-    "win": { "icon": "build/icon.ico" },
+    "files": [
+      "main.js",
+      "app/**/*"
+    ],
+    "directories": {
+      "buildResources": "build",
+      "output": "dist"
+    },
+    "win": {
+      "icon": "build/icon.ico"
+    },
     "nsis": {
       "oneClick": false,
       "allowToChangeInstallationDirectory": true,
       "createDesktopShortcut": true,
-      "shortcutName": "Dựng Video"
+      "shortcutName": "Dựng Video",
+      "artifactName": "DungVideo-Setup-${version}.${ext}"
+    },
+    "publish": null,
+    "portable": {
+      "artifactName": "DungVideo-Portable-${version}.${ext}"
     }
-  }
+  },
+  "author": "ducbui2k5-hash"
 }
