@@ -42,3 +42,21 @@ jobs:
         with:
           name: DungVideo-windows
           path: windows/dist/*.exe
+  release:
+    needs: [android, windows]
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          path: out
+          merge-multiple: true
+      - name: Publish release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          ls -la out
+          gh release delete latest -y --cleanup-tag -R "$GITHUB_REPOSITORY" || true
+          gh release create latest out/* -R "$GITHUB_REPOSITORY" --title "Dựng Video – bản mới nhất" --notes "Tải về: DungVideo.apk (Android 10+), DungVideo-Setup.exe (Windows, bộ cài), DungVideo-Portable.exe (Windows, chạy luôn). Bản online: https://ducbui2k5-hash.github.io/dung-video/"

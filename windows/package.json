@@ -31,11 +31,11 @@
       "allowToChangeInstallationDirectory": true,
       "createDesktopShortcut": true,
       "shortcutName": "Dựng Video",
-      "artifactName": "DungVideo-Setup-${version}.${ext}"
+      "artifactName": "DungVideo-Setup.${ext}"
     },
     "publish": null,
     "portable": {
-      "artifactName": "DungVideo-Portable-${version}.${ext}"
+      "artifactName": "DungVideo-Portable.${ext}"
     }
   },
   "author": "ducbui2k5-hash"

@@ -10,8 +10,8 @@
        npm run dist
 
 4. Trong thư mục `dist` sẽ có 2 tệp:
-   - `DungVideo-Setup-1.0.0.exe` – bộ cài đặt (tạo biểu tượng ngoài màn hình).
-   - `DungVideo-Portable-1.0.0.exe` – bản chạy luôn, không cần cài.
+   - `DungVideo-Setup.exe` – bộ cài đặt (tạo biểu tượng ngoài màn hình).
+   - `DungVideo-Portable.exe` – bản chạy luôn, không cần cài.
 
 Chạy thử không cần build: `npm install` rồi `npm start`.
 
